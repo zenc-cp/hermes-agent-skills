@@ -1,0 +1,134 @@
+{
+  "version": "1.0",
+  "updated_at": "2026-04-13T00:00:00Z",
+  "last_commit": null,
+  "total": 18,
+  "skills": [
+    {
+      "name": "agent-audit",
+      "description": "agent-audit",
+      "triggers": [],
+      "path": "skills/agent-audit/SKILL.md",
+      "size_lines": 93
+    },
+    {
+      "name": "agent-tools",
+      "description": "agent-tools",
+      "triggers": [],
+      "path": "skills/agent-tools/SKILL.md",
+      "size_lines": 235
+    },
+    {
+      "name": "agentic-patterns",
+      "description": "Reconstructed internal patterns from Claude Code's architecture. Covers multi-agent orchestration, adversarial verification, context compaction, output efficiency, action safety, and memory selection. Load when building AI agents, coordinating subagents, writing system prompts, running verification passes, managing context windows, or designing agentic workflows. Trigger phrases: agent coordination, subagent orchestration, system prompt design, verification agent, context compaction, approval classifier, autonomous mode, proactive agent, memory selection.",
+      "triggers": [],
+      "path": "skills/agentic-patterns/SKILL.md",
+      "size_lines": 282
+    },
+    {
+      "name": "autoreason",
+      "description": "autoreason",
+      "triggers": [],
+      "path": "skills/autoreason/SKILL.md",
+      "size_lines": 131
+    },
+    {
+      "name": "blacksmith",
+      "description": "blacksmith",
+      "triggers": [],
+      "path": "skills/blacksmith/SKILL.md",
+      "size_lines": 104
+    },
+    {
+      "name": "evolution",
+      "description": "evolution",
+      "triggers": [],
+      "path": "skills/evolution/SKILL.md",
+      "size_lines": 371
+    },
+    {
+      "name": "find-skills",
+      "description": "Helps users discover and install agent skills when they ask questions like \"how do I do X\", \"find a skill for X\", \"is there a skill that can...\", or express interest in extending capabilities. This skill should be used when the user is looking for functionality that might exist as an installable skill.",
+      "triggers": [],
+      "path": "skills/find-skills/SKILL.md",
+      "size_lines": 142
+    },
+    {
+      "name": "focused-fix",
+      "description": "Use when the user asks to fix, debug, or make a specific feature/module/area work end-to-end. Triggers: 'make X work', 'fix the Y feature', 'the Z module is broken', 'focus on [area]'. Not for quick single-bug fixes \u2014 this is for systematic deep-dive repair across all files and dependencies.",
+      "triggers": [],
+      "path": "skills/focused-fix/SKILL.md",
+      "size_lines": 318
+    },
+    {
+      "name": "observability-designer",
+      "description": "Observability Designer (POWERFUL)",
+      "triggers": [],
+      "path": "skills/observability-designer/SKILL.md",
+      "size_lines": 268
+    },
+    {
+      "name": "openspace-evolution",
+      "description": "openspace-evolution",
+      "triggers": [],
+      "path": "skills/openspace-evolution/SKILL.md",
+      "size_lines": 63
+    },
+    {
+      "name": "price-action",
+      "description": "price-action",
+      "triggers": [],
+      "path": "skills/price-action/SKILL.md",
+      "size_lines": 65
+    },
+    {
+      "name": "production-safety",
+      "description": "Production safety rules for ZenOps. Auth credentials are sacred. Always backup /etc/ files. Always caddy validate before reload. Never git add -A. Never fake terminal output.",
+      "triggers": [],
+      "path": "skills/production-safety/SKILL.md",
+      "size_lines": 24
+    },
+    {
+      "name": "revenue-intel",
+      "description": "revenue-intel",
+      "triggers": [],
+      "path": "skills/revenue-intel/SKILL.md",
+      "size_lines": 352
+    },
+    {
+      "name": "security-recon",
+      "description": "security-recon",
+      "triggers": [],
+      "path": "skills/security-recon/SKILL.md",
+      "size_lines": 23
+    },
+    {
+      "name": "skill-tester",
+      "description": "Skill Tester",
+      "triggers": [],
+      "path": "skills/skill-tester/SKILL.md",
+      "size_lines": 389
+    },
+    {
+      "name": "system-health",
+      "description": "system-health",
+      "triggers": [],
+      "path": "skills/system-health/SKILL.md",
+      "size_lines": 47
+    },
+    {
+      "name": "zenda-manager",
+      "description": "zenda-manager",
+      "triggers": [],
+      "path": "skills/zenda-manager/SKILL.md",
+      "size_lines": 373
+    },
+    {
+      "name": "zenops-ops",
+      "description": "ZenOps stack operational playbook. Covers VM deploy commands, service management, database access, agent debugging, and common fixes. Load when operating the ZenOps production system, debugging services, deploying changes, or checking system health.",
+      "triggers": [],
+      "path": "skills/zenops-ops/SKILL.md",
+      "size_lines": 276
+    }
+  ]
+}

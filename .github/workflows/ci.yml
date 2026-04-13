@@ -1,0 +1,153 @@
+name: Skill CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - '.github/workflows/ci.yml'
+      - 'index.json'
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly validation every Sunday at 03:00 UTC
+    - cron: '0 3 * * 0'
+
+jobs:
+  validate-skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pyyaml tqdm
+
+      - name: Validate skill index
+        run: |
+          python3 -c "
+          import json, sys, os
+          with open('index.json') as f:
+              idx = json.load(f)
+          skills_dir = 'skills'
+          indexed = set(idx['skills'])
+          present = set(os.listdir(skills_dir))
+          missing = indexed - present
+          extra = present - indexed
+          if missing:
+              print(f'ERROR: indexed but missing: {missing}')
+              sys.exit(1)
+          if extra:
+              print(f'WARNING: present but not indexed: {extra}')
+          print(f'index.json: {len(indexed)} skills ✓')
+          print(f'skills/:    {len(present)} skills ✓')
+          print('Index validation passed.')
+          "
+
+      - name: Validate SKILL.md frontmatter
+        run: |
+          python3 -c "
+          import yaml, sys, os, re
+          errors = []
+          warnings = []
+          for skill in sorted(os.listdir('skills')):
+              path = f'skills/{skill}/SKILL.md'
+              if not os.path.exists(path):
+                  errors.append(f'{skill}: SKILL.md missing')
+                  continue
+              raw = open(path).read(4096)
+              # Extract YAML frontmatter
+              m = re.match(r'^---\n(.*?)\n---', raw, re.DOTALL)
+              if not m:
+                  warnings.append(f'{skill}: no frontmatter')
+                  continue
+              try:
+                  fm = yaml.safe_load(m.group(1))
+                  required = ['name', 'description']
+                  for k in required:
+                      if k not in fm:
+                          errors.append(f'{skill}: missing {k} in frontmatter')
+                  # Triggers should be a list
+                  if 'triggers' in fm and not isinstance(fm['triggers'], list):
+                      warnings.append(f'{skill}: triggers is not a list')
+              except Exception as e:
+                  errors.append(f'{skill}: frontmatter parse error: {e}')
+          for w in warnings:
+              print(f'WARNING: {w}')
+          for e in errors:
+              print(f'ERROR: {e}')
+          if errors:
+              sys.exit(1)
+          print(f'Frontmatter validation: {len(warnings)} warnings, 0 errors ✓')
+          "
+
+      - name: Check skill README presence
+        run: |
+          for skill in skills/*/; do
+              name=$(basename "$skill")
+              if [ ! -f "$skill/SKILL.md" ]; then
+                  echo "ERROR: $name missing SKILL.md"
+                  exit 1
+              fi
+          done
+          echo "All $(ls -d skills/*/ | wc -l) skills have SKILL.md ✓"
+
+      - name: Run skill-specific tests (if test script exists)
+        run: |
+          for skill in skills/*/; do
+              name=$(basename "$skill")
+              if [ -f "$skill/test.sh" ]; then
+                  echo "Running test.sh for $name..."
+                  bash "$skill/test.sh" || { echo "FAIL: $name/test.sh"; exit 1; }
+              fi
+          done
+          echo "Skill tests done."
+
+  publish-index:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update index.json timestamp
+        run: |
+          python3 -c "
+          import json, datetime
+          with open('index.json') as f:
+              idx = json.load(f)
+          idx['updated_at'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+          idx['last_commit'] = '${{ github.sha }}'
+          with open('index.json', 'w') as f:
+              json.dump(idx, f, indent=2)
+          print('index.json updated.')
+          "
+
+      - name: Commit updated index
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add index.json
+          git diff --cached --exit-code || {
+              git commit -m 'chore: auto-update index.json timestamp [skip ci]'
+              git push
+              echo "index.json updated and pushed."
+          }
+
+  badge:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate skill count badge
+        run: |
+          count=$(ls -d skills/*/ | wc -l)
+          echo "Skills: $count"
+          # Store for use in other jobs
+          echo "skill_count=$count" >> $GITHUB_OUTPUT
