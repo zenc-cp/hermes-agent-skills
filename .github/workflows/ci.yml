@@ -34,7 +34,8 @@ jobs:
           with open('index.json') as f:
               idx = json.load(f)
           skills_dir = 'skills'
-          indexed = set(idx['skills'])
+          # skills is a list of dicts: [{'name': 'foo', ...}, ...]
+          indexed = {s['name'] for s in idx['skills']}
           present = set(os.listdir(skills_dir))
           missing = indexed - present
           extra = present - indexed
